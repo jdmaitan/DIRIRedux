@@ -1,18 +1,22 @@
 import React, { MouseEventHandler, useState } from 'react';
 import { MenuItem } from '../../entities/entities';
 import "./FoodOrder.css";
+import { useDispatch } from "react-redux";
+import { orderItem } from '../../features/menuSlice';
+
 
 interface FoodOrderProps
 {
     food: MenuItem;
-    onQuantityUpdated: (id: number, quantity: number) => void;
     onReturnToMenu: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-function FoodOrder(props: FoodOrderProps)
+function FoodOrder({ food, onReturnToMenu }: FoodOrderProps)
 {
     const [quantity, setQuantity] = useState(1);
     const [orderSent, setOrderSent] = useState(false);
+    const dispatch = useDispatch();
+
 
     const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     {
@@ -22,7 +26,7 @@ function FoodOrder(props: FoodOrderProps)
 
     const handleSubmitOrder = () =>
     {
-        props.onQuantityUpdated(props.food.id, quantity);
+        dispatch(orderItem({ id: food.id, quantity }));
         setOrderSent(true);
     };
 
@@ -30,14 +34,14 @@ function FoodOrder(props: FoodOrderProps)
         <div className="food-order-container">
 
             <div className="food-details">
-                <h4>{props.food.name}</h4>
+                <h4>{food.name}</h4>
                 <div className="food-image-container">
-                    <img src={`/images/${props.food.image}`}
-                        alt={props.food.name}
+                    <img src={`/images/${food.image}`}
+                        alt={food.name}
                         className="food-image" />
                 </div>
-                <p>{props.food.desc}</p>
-                <p className="food-price">{(props.food.price * quantity).toFixed(2)}€</p>
+                <p>{food.desc}</p>
+                <p className="food-price">{(food.price * quantity).toFixed(2)}€</p>
                 <div className="quantity-controls">
                     <label htmlFor="quantity">Cantidad:</label>
                     <input
@@ -56,7 +60,7 @@ function FoodOrder(props: FoodOrderProps)
                         {orderSent ? "Pedido enviado" : "Enviar pedido"}
                     </button>
 
-                    <button onClick={props.onReturnToMenu}
+                    <button onClick={onReturnToMenu}
                         className="return-button">
                         Volver al menú
                     </button>

@@ -1,6 +1,7 @@
 import { Suspense, useState } from 'react'
 import './App.css'
-import { MenuItem } from './entities/entities';
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 import React from 'react';
 
 const Foods = React.lazy(() => import('./components/Foods/Foods'));
@@ -8,47 +9,7 @@ const Foods = React.lazy(() => import('./components/Foods/Foods'));
 function App()
 {
   const [isChooseFoodPage, setIsChooseFoodPage] = useState(false);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([
-    {
-      id: 1,
-      name: "Hamburguesa de Pollo",
-      quantity: 40,
-      desc: "Hamburguesa de pollo frito... y mayonesa",
-      price: 24,
-      image: "hamburguesa.jpeg"
-    },
-    {
-      id: 2,
-      name: "Pizza Margarita",
-      quantity: 30,
-      desc: "Clásica pizza con tomate, mozzarella y albahaca",
-      price: 35,
-      image: "margarita.jpg"
-    },
-    {
-      id: 3,
-      name: "Tacos al Pastor",
-      quantity: 50,
-      desc: "Tacos con carne de cerdo adobada, piña y cilantro",
-      price: 18,
-      image: "tacos.jpg"
-    },
-    {
-      id: 4,
-      name: "Ensalada César",
-      quantity: 25,
-      desc: "Ensalada con lechuga romana, pollo, crutones y aderezo César",
-      price: 22,
-      image: "ensalada.jpg"
-    },
-  ]);
-
-  function updateItem(id: number, quantity: number)
-  {
-    setMenuItems(prevItems => prevItems.map(item =>
-      item.id === id ? { ...item, quantity: item.quantity - quantity } : item
-    ));
-  }
+  const menuItems = useSelector((state: RootState) => state.menu.items);
 
   return (
     <div className="App">
@@ -74,8 +35,7 @@ function App()
 
       {isChooseFoodPage &&
         <Suspense fallback={<div>Cargando productos...</div>}>
-          <Foods foodItems={menuItems}
-            onOrderSubmitted={updateItem} />
+          <Foods />
         </Suspense>
       }
 
