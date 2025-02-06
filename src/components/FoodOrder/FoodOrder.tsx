@@ -36,7 +36,7 @@ function FoodOrder({ food, onReturnToMenu }: FoodOrderProps)
             <div className="food-details">
                 <h4>{food.name}</h4>
                 <div className="food-image-container">
-                    <img src={`/images/${food.image}`}
+                    <img src={`images/${food.image}`}
                         alt={food.name}
                         className="food-image" />
                 </div>
