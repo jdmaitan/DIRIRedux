@@ -1,46 +1,48 @@
-import { Suspense, useState } from 'react'
-import './App.css'
-import { useSelector } from "react-redux";
-import { RootState } from "./store";
 import React from 'react';
+import { Suspense, useState } from 'react'
+import { useSelector } from "react-redux";
+import { RootState } from "./store/store";
+import './App.css'
 
-const Foods = React.lazy(() => import('./components/Foods/Foods'));
+const MenuPage = React.lazy(() => import('./components/MenuPage/MenuPage'));
 
 function App()
 {
-  const [isChooseFoodPage, setIsChooseFoodPage] = useState(false);
-  const menuItems = useSelector((state: RootState) => state.menu.items);
+    //Se obtienen los objetos del menú desde el estado de redux
+    const menuItems = useSelector((state: RootState) => state.menu.menuItems);
+    const [showMenuPage, setShowMenuPage] = useState(false);
 
-  return (
-    <div className="App">
-      <button className="toggleButton" onClick={() => setIsChooseFoodPage(!isChooseFoodPage)}>
-        {isChooseFoodPage ? "Disponibilidad" : "Pedir Comida"}
-      </button>
+    return (
+        <div className="App">
+            <button className="toggleButton"
+                onClick={() => setShowMenuPage(!showMenuPage)}>
+                {showMenuPage ? "Mostrar stock de productos" : "Mostrar menú"}
+            </button>
 
-      <h1 className="title">Comida Rápida Online</h1>
+            <h1 className="title">Comida Rápida Online</h1>
 
-      {!isChooseFoodPage && (
-        <>
-          <h4 className="subTitle">Menús</h4>
-          <ul className="ulApp">
-            {menuItems.map((item) => (
-              <li key={item.id} className="liApp">
-                <p>{item.name}</p>
-                <p>Stock:{item.quantity}</p>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+            {!showMenuPage && (
+                <>
+                    <h4 className="subTitle">Disponibilidad de platos</h4>
+                    <ul className="ulApp">
+                        {menuItems.map((menuItem) => (
+                            <li key={menuItem.id} className="liApp">
+                                <p>{menuItem.name}</p>
+                                <p>Stock:{menuItem.quantity}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
 
-      {isChooseFoodPage &&
-        <Suspense fallback={<div>Cargando productos...</div>}>
-          <Foods />
-        </Suspense>
-      }
+            {showMenuPage &&
+                <Suspense fallback={<div>Cargando menú...</div>}>
+                    <MenuPage />
+                </Suspense>
+            }
 
-    </div>
-  );
+        </div>
+    );
 }
 
 export default App
